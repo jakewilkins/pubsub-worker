@@ -14,8 +14,12 @@ module PubsubWorker
       return false unless script_exists?
 
       exit_status = nil
-      Open3.popen2(script_path) do |input, output, wait|
-        input.puts payload_to_json
+      Open3.popen2(script_path.to_s, chdir: PubsubWorker.scripts_dir) do |input, output, wait|
+        input.print payload.to_json
+        input.close
+
+        PubsubWorker.debug output.gets
+
         exit_status = wait.value
       end
       exit_status

@@ -50,6 +50,12 @@ module PubsubWorker
   def self.log(msg)
     $stdout.puts msg
   end
+
+  def self.debug(msg)
+    if ENV["DEBUG"]
+      log(msg)
+    end
+  end
 end
 
 PubsubWorker.start
