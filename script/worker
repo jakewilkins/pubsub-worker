@@ -1,0 +1,30 @@
+#!/bin/bash
+
+if [[ -z "$REDIS_URL" ]]; then
+	export REDIS_URL="redis://localhost:6379"
+	echo "Using default redis: $REDIS_URL"
+else
+	echo "Using redis url: $REDIS_URL"
+fi
+
+if [[ -z "$CHANNELS" ]]; then
+	export CHANNELS="default,debug"
+	echo "Using default channels: $CHANNELS"
+else
+	echo "Using CHANNELS: $CHANNELS"
+fi
+
+if [[ -z "$SCRIPTS_DIR" ]]; then
+	export SCRIPTS_DIR="`pwd`/scripts"
+	echo "Using default scripts dir: $SCRIPTS_DIR"
+else
+	echo "Using SCRIPTS_DIR: $SCRIPTS_DIR"
+fi
+
+if bundle check; then
+	echo "Bundle satisfied"
+else
+	bundle install
+fi
+
+bundle exec ruby ./main.rb

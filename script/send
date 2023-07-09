@@ -1,0 +1,32 @@
+#!/bin/bash
+#
+
+function usage() {
+	echo "script/send <channel> '<payload>'"
+	echo "Specify redis via REDIS_URL"
+	echo "payload must include 'channel' property which maps to script name"
+}
+
+if [ -z "$1" ]; then
+	echo "You must supply a channel name"
+	usage
+	exit 1
+fi
+
+channel="$1"
+shift
+
+payload="$@"
+
+hash redis-cli || {
+	echo "redis-cli command must be available to send jobs."
+  exit 1
+}
+
+redis_arg=""
+
+if [ ! -z "$REDIS_URL" ]; then
+	redis_arg="-h $REDIS_URL"
+fi
+
+redis-cli $redis_arg publish $channel "$payload"
